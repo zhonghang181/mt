@@ -12,6 +12,7 @@ public class Door : MonoBehaviour
         Red,
     }
     public DoorType _doorType;
+    public AudioClip _audioClip;
 
     // =========== Private ===========
     private Animator _animator;
@@ -30,6 +31,11 @@ public class Door : MonoBehaviour
     public void Open()
     {
         _animator.SetBool("IsOpen", true);
+    }
+
+    public bool IsOpened()
+    {
+        return _animator.GetBool("IsOpen");
     }
 
     public void OnAnimationFinished()

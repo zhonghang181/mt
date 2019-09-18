@@ -96,6 +96,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _doorType: 0
+  _audioClip: {fileID: 8300000, guid: 1b849c3d9232348dd89cca3afb162172, type: 3}
 --- !u!95 &6322625221478031990
 Animator:
   serializedVersion: 3
