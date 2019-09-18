@@ -54,8 +54,6 @@ public class Player : MonoBehaviour
                 _collider.enabled = true;
                 if (hit.transform == null || hit.collider.isTrigger)
                 {
-                    _animator.SetFloat("MoveX", move.x);
-                    _animator.SetFloat("MoveY", move.y);
                     _animator.SetBool("Moving", true);
                     _moveDetalTime = 0.0f;
                 }
@@ -71,6 +69,10 @@ public class Player : MonoBehaviour
                         }   
                     }
                 }
+
+                // =========== Animation ===========
+                _animator.SetFloat("MoveX", move.x);
+                _animator.SetFloat("MoveY", move.y);
             }
         }
         else
