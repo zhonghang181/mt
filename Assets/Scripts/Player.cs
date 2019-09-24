@@ -5,7 +5,8 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     // =========== Public ===========
-    public AudioClip _acFootStep;
+    public AudioClip _asFootStep;
+    public PlayerData _playerData = new PlayerData();
 
     // =========== Private ===========
     private Animator _animator;
@@ -25,6 +26,8 @@ public class Player : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody2D>();
         _collider = GetComponent<Collider2D>();
         _audioSource = GetComponent<AudioSource>();
+
+        UnitCenter.UnitPlayer = this;
     }
 
     Vector2 GetMoveVector()
@@ -62,11 +65,7 @@ public class Player : MonoBehaviour
                     if (hit.collider.tag == "Door")
                     {
                         Door door = hit.collider.gameObject.GetComponent<Door>();
-                        if (!door.IsOpened())
-                        {
-                            door.Open();
-                            _audioSource.PlayOneShot(door._audioClip, 0.5f);
-                        }   
+                        OpenDoor(door);
                     }
                 }
 
@@ -90,8 +89,20 @@ public class Player : MonoBehaviour
         }
     }
 
+    void OpenDoor(Door door)
+    {
+        int keyIndex = (int)door.GetDoorType();
+        if (!door.IsOpened() && _playerData.GetKeyNum(keyIndex) > 0)
+        {
+            _playerData.UpdateKeys(keyIndex, -1);
+            door.Open();
+            _audioSource.PlayOneShot(door._audioClip, 0.5f);
+        }
+    }
+
+    // Animation Event
     public void FootStep()
     {
-        _audioSource.PlayOneShot(_acFootStep);
+        _audioSource.PlayOneShot(_asFootStep);
     }
 }

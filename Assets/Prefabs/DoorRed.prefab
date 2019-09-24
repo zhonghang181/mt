@@ -95,7 +95,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34394f666f4604114857df85aa9793dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _doorType: 0
+  _doorType: 2
   _audioClip: {fileID: 8300000, guid: 1b849c3d9232348dd89cca3afb162172, type: 3}
 --- !u!95 &6322625221478031990
 Animator:

@@ -28,6 +28,12 @@ public class Door : MonoBehaviour
         
     }
 
+    // =========== Outter Api ===========
+    public void OnAnimationFinished()
+    {
+        Destroy(gameObject);
+    }
+
     public void Open()
     {
         _animator.SetBool("IsOpen", true);
@@ -38,8 +44,8 @@ public class Door : MonoBehaviour
         return _animator.GetBool("IsOpen");
     }
 
-    public void OnAnimationFinished()
+    public DoorType GetDoorType()
     {
-        Destroy(gameObject);
+        return _doorType;
     }
 }

@@ -163,7 +163,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebfda815149484597aa02b304a768a70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _acFootStep: {fileID: 8300000, guid: bca09b6626d2e49eebc217e1e11d6407, type: 3}
+  _asFootStep: {fileID: 8300000, guid: bca09b6626d2e49eebc217e1e11d6407, type: 3}
+  _playerData:
+    level: 1
+    gold: 0
+    exp: 0
+    hp: 1000
+    atk: 10
+    def: 10
+    keys: 000000000100000001000000
 --- !u!82 &7267553934980789072
 AudioSource:
   m_ObjectHideFlags: 0
