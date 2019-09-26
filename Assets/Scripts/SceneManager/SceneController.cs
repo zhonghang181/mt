@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class SceneController : MonoBehaviour
 {
+    #region Static
     protected static SceneController s_Instance;
     public static SceneController Instance
     {
@@ -42,6 +43,13 @@ public class SceneController : MonoBehaviour
         Instance.StartCoroutine(Instance.Transition(transitionPoint.GetSceneName()));
     }
 
+    public static void RestartLevel()
+    {
+        Instance.StartCoroutine(Instance.Transition(SceneManager.GetActiveScene().name));
+    }
+    #endregion
+
+    #region Instance
     private void Awake()
     {
         if (Instance != this)
@@ -77,4 +85,5 @@ public class SceneController : MonoBehaviour
         yield return StartCoroutine(SceneFader.FadeSceneOut());
         m_IsTransitioning = false;
     }
+    #endregion
 }

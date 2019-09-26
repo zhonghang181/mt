@@ -1,9 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
+    static protected Player s_Instance;
+    static public Player Instance
+    {
+        get { return s_Instance; }
+    }
+
     // =========== Public ===========
     public AudioClip _asFootStep;
     public PlayerData _playerData = new PlayerData();
@@ -20,14 +27,19 @@ public class Player : MonoBehaviour
     private const float DURATION = 0.2f;
     private float _moveDetalTime;
 
+    bool m_InPause = false;
+
+    private void Awake()
+    {
+        s_Instance = this;
+    }
+
     void Start()
     {
         _animator = GetComponent<Animator>();
         _rigidbody = GetComponent<Rigidbody2D>();
         _collider = GetComponent<Collider2D>();
         _audioSource = GetComponent<AudioSource>();
-
-        UnitCenter.UnitPlayer = this;
     }
 
     Vector2 GetMoveVector()
@@ -40,53 +52,97 @@ public class Player : MonoBehaviour
         return new Vector2(horizontal, vertical);
     }
 
+    public void Pause()
+    {
+        m_InPause = true;
+        Time.timeScale = 0;
+
+        PlayerInput.Instance.ReleaseControl(false);
+        PlayerInput.Instance.Pause.GainControl();
+
+        SceneManager.LoadSceneAsync("Pause", LoadSceneMode.Additive);
+    }
+
+    public void Resume()
+    {
+        if (Time.timeScale > 0)
+        {
+            return;
+        }
+
+        StartCoroutine(ResumeCoroutine());
+    }
+
+    IEnumerator ResumeCoroutine()
+    {
+        Time.timeScale = 1;
+        SceneManager.UnloadSceneAsync("Pause");
+        PlayerInput.Instance.GainControl();
+
+        yield return new WaitForFixedUpdate();
+        yield return new WaitForEndOfFrame();
+
+        m_InPause = false;
+    }
+
     void Update()
     {
-        Vector2 move = GetMoveVector();
-
-        if (!_animator.GetBool("Moving"))
+        if (PlayerInput.Instance.Pause.Down)
         {
-            if (Mathf.Abs(move.x) + Mathf.Abs(move.y) > 0)
+            if (!m_InPause)
             {
-                Vector2 posCur = _rigidbody.position;
-                _posNext = posCur + move;
-                _posPrev = posCur;
-
-                _collider.enabled = false;
-                RaycastHit2D hit = Physics2D.Linecast(_posPrev, _posNext);
-                _collider.enabled = true;
-                if (hit.transform == null || hit.collider.isTrigger)
-                {
-                    _animator.SetBool("Moving", true);
-                    _moveDetalTime = 0.0f;
-                }
-                else
-                {
-                    if (hit.collider.tag == "Door")
-                    {
-                        Door door = hit.collider.gameObject.GetComponent<Door>();
-                        OpenDoor(door);
-                    }
-                }
-
-                // =========== Animation ===========
-                _animator.SetFloat("MoveX", move.x);
-                _animator.SetFloat("MoveY", move.y);
-            }
-        }
-        else
-        {
-            _moveDetalTime += Time.deltaTime;
-            if (_moveDetalTime >= DURATION)
-            {
-                _moveDetalTime = DURATION;
-                _animator.SetBool("Moving", false);
-                _rigidbody.position = _posNext;
+                Pause();
             } else
             {
-                _rigidbody.MovePosition(Vector2.Lerp(_posPrev, _posNext, _moveDetalTime / DURATION));
+                Resume();
             }
         }
+
+        //Vector2 move = GetMoveVector();
+
+        //if (!_animator.GetBool("Moving"))
+        //{
+        //    if (Mathf.Abs(move.x) + Mathf.Abs(move.y) > 0)
+        //    {
+        //        Vector2 posCur = _rigidbody.position;
+        //        _posNext = posCur + move;
+        //        _posPrev = posCur;
+
+        //        _collider.enabled = false;
+        //        RaycastHit2D hit = Physics2D.Linecast(_posPrev, _posNext);
+        //        _collider.enabled = true;
+        //        if (hit.transform == null || hit.collider.isTrigger)
+        //        {
+        //            _animator.SetBool("Moving", true);
+        //            _moveDetalTime = 0.0f;
+        //        }
+        //        else
+        //        {
+        //            if (hit.collider.tag == "Door")
+        //            {
+        //                Door door = hit.collider.gameObject.GetComponent<Door>();
+        //                OpenDoor(door);
+        //            }
+        //        }
+
+        //        // =========== Animation ===========
+        //        _animator.SetFloat("MoveX", move.x);
+        //        _animator.SetFloat("MoveY", move.y);
+        //    }
+        //}
+        //else
+        //{
+        //    _moveDetalTime += Time.deltaTime;
+        //    if (_moveDetalTime >= DURATION)
+        //    {
+        //        _moveDetalTime = DURATION;
+        //        _animator.SetBool("Moving", false);
+        //        _rigidbody.position = _posNext;
+        //    } else
+        //    {
+        //        _rigidbody.MovePosition(Vector2.Lerp(_posPrev, _posNext, _moveDetalTime / DURATION));
+        //    }
+        //}
     }
 
     void OpenDoor(Door door)

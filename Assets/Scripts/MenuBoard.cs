@@ -31,9 +31,9 @@ public class MenuBoard : MonoBehaviour
     // =========== Inner Function ===========
     void UpdateKeys()
     {
-        Keys[0].text = UnitCenter.UnitPlayer._playerData.GetKeyNum(0).ToString();
-        Keys[1].text = UnitCenter.UnitPlayer._playerData.GetKeyNum(1).ToString();
-        Keys[2].text = UnitCenter.UnitPlayer._playerData.GetKeyNum(2).ToString();
+        Keys[0].text = Player.Instance._playerData.GetKeyNum(0).ToString();
+        Keys[1].text = Player.Instance._playerData.GetKeyNum(1).ToString();
+        Keys[2].text = Player.Instance._playerData.GetKeyNum(2).ToString();
     }
 
     // =========== Outter Api ===========
