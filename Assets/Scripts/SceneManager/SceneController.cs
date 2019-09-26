@@ -42,18 +42,39 @@ public class SceneController : MonoBehaviour
         Instance.StartCoroutine(Instance.Transition(transitionPoint.GetSceneName()));
     }
 
+    private void Awake()
+    {
+        if (Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        DontDestroyOnLoad(gameObject);
+    }
+
     public IEnumerator Transition(string newSceneName)
     {
-        // TODO SaveData
-        m_IsTransitioning = true;
-        yield return StartCoroutine(SceneFader.FadeSceneIn(SceneFader.FadeType.Loading));
-        Debug.Log("After FadeSceneIn");
+        var options = SceneManager.LoadSceneAsync(newSceneName);
+        options.allowSceneActivation = false;
+        while (!options.isDone)
+        {
+            if (options.progress >= 0.9f)
+            {
+                options.allowSceneActivation = true;
+            } 
 
-        yield return SceneManager.LoadSceneAsync(newSceneName);
-        Debug.Log("After LoadSceneAsync");
+            if (!m_IsTransitioning)
+            {
+                m_IsTransitioning = true;
+                yield return Instance.StartCoroutine(SceneFader.FadeSceneIn(SceneFader.FadeType.Loading));
+            } else
+            {
+                yield return null;
+            }
+        }
 
         yield return StartCoroutine(SceneFader.FadeSceneOut());
-        Debug.Log("After FadeSceneOut");
         m_IsTransitioning = false;
     }
 }

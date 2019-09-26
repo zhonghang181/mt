@@ -53,7 +53,6 @@ public class SceneFader : MonoBehaviour
 
     public static IEnumerator FadeSceneIn(FadeType fadeType)
     {
-        Debug.Log("FadeSceneIn Start");
         CanvasGroup canvasGroup;
         switch(fadeType)
         {
@@ -67,19 +66,16 @@ public class SceneFader : MonoBehaviour
 
         canvasGroup.gameObject.SetActive(true);
         yield return Instance.StartCoroutine(Instance.Fade(1f, canvasGroup));
-        Debug.Log("FadeSceneIn End");
     }
 
     public static IEnumerator FadeSceneOut()
     {
-        Debug.Log("FadeSceneOut Start");
         CanvasGroup canvasGroup;
         canvasGroup = Instance.loadingCanvasGroup.alpha > 0.1f ? Instance.loadingCanvasGroup : null;
         canvasGroup = Instance.gameOverCanvasGroup.alpha > 0.1f ? Instance.gameOverCanvasGroup : canvasGroup;
 
         yield return Instance.StartCoroutine(Instance.Fade(0f, canvasGroup));
         canvasGroup.gameObject.SetActive(false);
-        Debug.Log("FadeSceneOut End");
     }
     #endregion
 
@@ -94,13 +90,14 @@ public class SceneFader : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
 
+        loadingCanvasGroup.gameObject.SetActive(false);
         loadingCanvasGroup.alpha = 0f;
+        gameOverCanvasGroup.gameObject.SetActive(false);
         gameOverCanvasGroup.alpha = 0f;
     }
 
     protected IEnumerator Fade(float dstAlpha, CanvasGroup canvasGroup)
     {
-        Debug.Log("Fade Start");
         m_IsFading = true;
         canvasGroup.blocksRaycasts = true;
 
@@ -110,9 +107,8 @@ public class SceneFader : MonoBehaviour
             canvasGroup.alpha = Mathf.MoveTowards(canvasGroup.alpha, dstAlpha, fadeSpeed * Time.deltaTime);
             yield return null;
         }
-
-        Debug.Log("Fade End");
         canvasGroup.alpha = dstAlpha;
+
         m_IsFading = false;
         canvasGroup.blocksRaycasts = false;
     }
