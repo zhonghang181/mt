@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerInput : MonoBehaviour
 {
+    [Serializable]
     public class InputButton
     {
         public KeyCode Key;
@@ -75,6 +77,54 @@ public class PlayerInput : MonoBehaviour
         }
     }
 
+    [Serializable]
+    public class InputAxis
+    {
+        public KeyCode positive;
+        public KeyCode negative;
+        public float Value { get; protected set; }
+        public bool ReceivingInput { get; protected set; }
+        protected bool m_GettingInput = true;
+
+        public InputAxis(KeyCode positive, KeyCode negative)
+        {
+            this.positive = positive;
+            this.negative = negative;
+        }
+
+        public void Get()
+        {
+            if (!m_GettingInput)
+                return;
+
+            bool positiveHeld = Input.GetKey(positive);
+            bool negativeHeld = Input.GetKey(negative);
+
+            if (positiveHeld == negativeHeld)
+                Value = 0f;
+            else if (positiveHeld)
+                Value = 1f;
+            else
+                Value = -1f;
+
+            ReceivingInput = positiveHeld || negativeHeld;
+        }
+
+        public void GainControl()
+        {
+            m_GettingInput = true;
+        }
+
+        public void ReleaseControl(bool resetValues)
+        {
+            m_GettingInput = false;
+            if (resetValues)
+            {
+                Value = 0f;
+                ReceivingInput = false;
+            }
+        }
+    }
     #region Static-Instance
     protected static PlayerInput s_Instance;
     public static PlayerInput Instance
@@ -105,19 +155,16 @@ public class PlayerInput : MonoBehaviour
     #region Static-Properties
     #endregion
 
-    public InputButton Pause
-    {
-        get { return Instance.m_Puase; }
-    }
-    protected InputButton m_Puase = new InputButton(KeyCode.Escape);
-
     public bool HaveControl
     {
         get { return Instance.m_HaveControl; }
     }
-    protected bool m_HaveControl = true;
 
-    bool m_FixedUpdateHappend;
+    public InputButton Pause = new InputButton(KeyCode.Escape);
+    public InputAxis Horizontal = new InputAxis(KeyCode.D, KeyCode.A);
+    public InputAxis Vertical = new InputAxis(KeyCode.W, KeyCode.S);
+    protected bool m_HaveControl = true;
+    protected bool m_FixedUpdateHappend;
 
     private void Awake()
     {
@@ -147,17 +194,23 @@ public class PlayerInput : MonoBehaviour
     protected void GetInputs(bool fixedUpdateHappend)
     {
         Pause.Get(fixedUpdateHappend);
+        Horizontal.Get();
+        Vertical.Get();
     }
 
     public void GainControl()
     {
         m_HaveControl = true;
         Pause.GainControl();
+        Horizontal.GainControl();
+        Vertical.GainControl();
     }
 
     public void ReleaseControl(bool resetValues = true)
     {
         m_HaveControl = false;
         StartCoroutine(Pause.ReleaseControl(resetValues));
+        Horizontal.ReleaseControl(resetValues);
+        Vertical.ReleaseControl(resetValues);
     }
 }

@@ -5,30 +5,43 @@ using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
+    public enum FaceType
+    {
+        Up, Down, Left, Right,
+    }
     static protected Player s_Instance;
     static public Player Instance
     {
         get { return s_Instance; }
     }
 
-    // =========== Public ===========
-    public AudioClip _asFootStep;
-    public PlayerData _playerData = new PlayerData();
+    public FaceType faceType = FaceType.Up;
+    public AudioClip audioClipFootStep;
+    public PlayerData PlayerData
+    {
+        get { return m_PlayerData; }
+    }
+    public PlayerData m_PlayerData = new PlayerData();
 
-    // =========== Private ===========
-    private Animator _animator;
-    private Rigidbody2D _rigidbody;
-    private Collider2D _collider;
-    private AudioSource _audioSource;
+    protected Animator m_Animator;
+    protected Rigidbody2D m_Rigidbody2D;
+    protected Collider2D m_Collider2D;
+    protected AudioSource m_AudioSource;
+    public PlayerController2D m_PlayerController2D;
 
-    private Vector2 _posNext;
-    private Vector2 _posPrev;
+    protected bool m_InPause;
+    protected Vector2 m_MoveVector;
+    protected bool m_MovingCheckSwitch;
+    protected ContactFilter2D m_ContactFilter;
+    protected RaycastHit2D[] m_HitBuffer = new RaycastHit2D[3];
 
-    private const float DURATION = 0.2f;
-    private float _moveDetalTime;
+    protected readonly int m_HashMovingPara = Animator.StringToHash("Moving");
+    protected readonly int m_HashMoveXPara = Animator.StringToHash("MoveX");
+    protected readonly int m_HashMoveYPara = Animator.StringToHash("MoveY");
+    protected readonly int m_HashStepLeftPara = Animator.StringToHash("StepLeft");
+    protected readonly int m_HashFacePara = Animator.StringToHash("Face");
 
-    bool m_InPause = false;
-
+    // =========== MonoBehaviour ===========
     private void Awake()
     {
         s_Instance = this;
@@ -36,22 +49,82 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        _animator = GetComponent<Animator>();
-        _rigidbody = GetComponent<Rigidbody2D>();
-        _collider = GetComponent<Collider2D>();
-        _audioSource = GetComponent<AudioSource>();
+        m_Animator = GetComponent<Animator>();
+        m_Rigidbody2D = GetComponent<Rigidbody2D>();
+        m_Collider2D = GetComponent<Collider2D>();
+        m_AudioSource = GetComponent<AudioSource>();
+        m_PlayerController2D = GetComponent<PlayerController2D>();
+
+        SceneLinkedSMB<Player>.Initialise(m_Animator, this);
+
+        Physics2D.queriesStartInColliders = false;
+        m_ContactFilter.layerMask = LayerMask.NameToLayer("Element");
+        m_ContactFilter.useLayerMask = true;
+        m_ContactFilter.useTriggers = false;
     }
 
-    Vector2 GetMoveVector()
+    void Update()
     {
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
-        horizontal = horizontal > 0 ? 1 : (horizontal < 0 ? -1 : 0);
-        vertical = vertical > 0 ? 1 : (vertical < 0 ? -1 : 0);
-        vertical = Mathf.Approximately(horizontal, 0) ? vertical : 0;
-        return new Vector2(horizontal, vertical);
+        if (PlayerInput.Instance.Pause.Down)
+        {
+            if (!m_InPause)
+            {
+                Pause();
+            } else
+            {
+                Resume();
+            }
+        }
     }
 
+    private void FixedUpdate()
+    {
+        //Debug.Log("MoveVector | " + m_MoveVector);
+        //m_PlayerController2D.Move(m_MoveVector);
+        //m_Animator.SetBool(m_HashMovingPara, !Mathf.Approximately(m_MoveVector.x , 0f) || !Mathf.Approximately(m_MoveVector.y, 0f));
+
+        if (m_MovingCheckSwitch)
+        {
+            var count = Physics2D.Raycast(transform.position, Face2Direction(), m_ContactFilter, m_HitBuffer, 1f);
+            Debug.Log("HitCount | " + count);
+            Debug.Log("FaceType | " + faceType);
+        }
+    }
+
+    // =========== Protected functions ===========
+    Vector2 Face2Direction()
+    {
+        Vector2 dir = Vector2.up;
+        switch (faceType)
+        {
+            case FaceType.Up:
+                dir = Vector2.up;
+                break;
+            case FaceType.Down:
+                dir = Vector2.down;
+                break;
+            case FaceType.Left:
+                dir = Vector2.left;
+                break;
+            case FaceType.Right:
+                dir = Vector2.right;
+                break;
+        }
+        return dir;
+    }
+    IEnumerator ResumeCoroutine()
+    {
+        Time.timeScale = 1;
+        SceneManager.UnloadSceneAsync("Pause");
+        PlayerInput.Instance.GainControl();
+
+        yield return new WaitForFixedUpdate();
+        yield return new WaitForEndOfFrame();
+
+        m_InPause = false;
+    }
+
+    // =========== Public functions ===========
     public void Pause()
     {
         m_InPause = true;
@@ -73,92 +146,62 @@ public class Player : MonoBehaviour
         StartCoroutine(ResumeCoroutine());
     }
 
-    IEnumerator ResumeCoroutine()
+    public void UpdateMoving()
     {
-        Time.timeScale = 1;
-        SceneManager.UnloadSceneAsync("Pause");
-        PlayerInput.Instance.GainControl();
-
-        yield return new WaitForFixedUpdate();
-        yield return new WaitForEndOfFrame();
-
-        m_InPause = false;
+        m_MoveVector.x = Mathf.MoveTowards(m_MoveVector.x, m_MoveVector.x + PlayerInput.Instance.Horizontal.Value, Time.deltaTime);
+        m_MoveVector.y = Mathf.MoveTowards(m_MoveVector.y, m_MoveVector.y + PlayerInput.Instance.Vertical.Value, Time.deltaTime);
     }
 
-    void Update()
+    public void UpdateFace()
     {
-        if (PlayerInput.Instance.Pause.Down)
+        var horizontal = PlayerInput.Instance.Horizontal.Value;
+        var vertical = PlayerInput.Instance.Vertical.Value;
+        if (!Mathf.Approximately(horizontal, 0))
         {
-            if (!m_InPause)
+            if (Mathf.Approximately(horizontal, 1))
             {
-                Pause();
+                faceType = FaceType.Right;
             } else
             {
-                Resume();
+                faceType = FaceType.Left;
             }
         }
 
-        //Vector2 move = GetMoveVector();
-
-        //if (!_animator.GetBool("Moving"))
-        //{
-        //    if (Mathf.Abs(move.x) + Mathf.Abs(move.y) > 0)
-        //    {
-        //        Vector2 posCur = _rigidbody.position;
-        //        _posNext = posCur + move;
-        //        _posPrev = posCur;
-
-        //        _collider.enabled = false;
-        //        RaycastHit2D hit = Physics2D.Linecast(_posPrev, _posNext);
-        //        _collider.enabled = true;
-        //        if (hit.transform == null || hit.collider.isTrigger)
-        //        {
-        //            _animator.SetBool("Moving", true);
-        //            _moveDetalTime = 0.0f;
-        //        }
-        //        else
-        //        {
-        //            if (hit.collider.tag == "Door")
-        //            {
-        //                Door door = hit.collider.gameObject.GetComponent<Door>();
-        //                OpenDoor(door);
-        //            }
-        //        }
-
-        //        // =========== Animation ===========
-        //        _animator.SetFloat("MoveX", move.x);
-        //        _animator.SetFloat("MoveY", move.y);
-        //    }
-        //}
-        //else
-        //{
-        //    _moveDetalTime += Time.deltaTime;
-        //    if (_moveDetalTime >= DURATION)
-        //    {
-        //        _moveDetalTime = DURATION;
-        //        _animator.SetBool("Moving", false);
-        //        _rigidbody.position = _posNext;
-        //    } else
-        //    {
-        //        _rigidbody.MovePosition(Vector2.Lerp(_posPrev, _posNext, _moveDetalTime / DURATION));
-        //    }
-        //}
+        if (!Mathf.Approximately(vertical, 0))
+        {
+            if (Mathf.Approximately(vertical, 1))
+            {
+                faceType = FaceType.Up;
+            }
+            else
+            {
+                faceType = FaceType.Down;
+            }
+        }
+        m_Animator.SetFloat(m_HashFacePara, (float)faceType);
     }
 
-    void OpenDoor(Door door)
+    public void TryMoving()
+    {
+        var horizontal = PlayerInput.Instance.Horizontal.Value;
+        var vertical = PlayerInput.Instance.Vertical.Value;
+        m_MovingCheckSwitch = Mathf.Abs(horizontal) + Mathf.Abs(vertical) > 0;
+    }
+
+    public void OpenDoor(Door door)
     {
         int keyIndex = (int)door.GetDoorType();
-        if (!door.IsOpened() && _playerData.GetKeyNum(keyIndex) > 0)
+        if (!door.IsOpened() && m_PlayerData.GetKeyNum(keyIndex) > 0)
         {
-            _playerData.UpdateKeys(keyIndex, -1);
+            m_PlayerData.UpdateKeys(keyIndex, -1);
             door.Open();
-            _audioSource.PlayOneShot(door._audioClip, 0.5f);
+            m_AudioSource.PlayOneShot(door._audioClip, 0.5f);
         }
     }
 
-    // Animation Event
+    // Called by Animation Event
     public void FootStep()
     {
-        _audioSource.PlayOneShot(_asFootStep);
+        m_AudioSource.PlayOneShot(audioClipFootStep);
     }
 }
