@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 7322587567882834679}
   - component: {fileID: 3968502785623842962}
   - component: {fileID: 7267553934980789072}
-  - component: {fileID: 2716785068380767821}
   m_Layer: 8
   m_Name: Hero
   m_TagString: Untagged
@@ -164,6 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebfda815149484597aa02b304a768a70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  faceType: 0
   audioClipFootStep: {fileID: 8300000, guid: bca09b6626d2e49eebc217e1e11d6407, type: 3}
   m_PlayerData:
     level: 0
@@ -173,6 +173,7 @@ MonoBehaviour:
     atk: 0
     def: 0
     keys: 
+  m_PlayerController2D: {fileID: 0}
 --- !u!82 &7267553934980789072
 AudioSource:
   m_ObjectHideFlags: 0
@@ -269,19 +270,3 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &2716785068380767821
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5507009763621248067}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b0754298caec4c9f9a180dfaa80cc18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  groundedLayerMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  groundedRaycastDistance: 0.1

@@ -27,18 +27,18 @@ public class Player : MonoBehaviour
     protected Rigidbody2D m_Rigidbody2D;
     protected Collider2D m_Collider2D;
     protected AudioSource m_AudioSource;
-    public PlayerController2D m_PlayerController2D;
 
     protected bool m_InPause;
-    protected Vector2 m_MoveVector;
     protected bool m_MovingCheckSwitch;
+    bool m_ResetPosition;
     protected ContactFilter2D m_ContactFilter;
     protected RaycastHit2D[] m_HitBuffer = new RaycastHit2D[3];
+    Vector2 m_NextPosition;
+    Vector2 m_PrevPosition;
 
     protected readonly int m_HashMovingPara = Animator.StringToHash("Moving");
     protected readonly int m_HashMoveXPara = Animator.StringToHash("MoveX");
     protected readonly int m_HashMoveYPara = Animator.StringToHash("MoveY");
-    protected readonly int m_HashStepLeftPara = Animator.StringToHash("StepLeft");
     protected readonly int m_HashFacePara = Animator.StringToHash("Face");
 
     // =========== MonoBehaviour ===========
@@ -53,14 +53,16 @@ public class Player : MonoBehaviour
         m_Rigidbody2D = GetComponent<Rigidbody2D>();
         m_Collider2D = GetComponent<Collider2D>();
         m_AudioSource = GetComponent<AudioSource>();
-        m_PlayerController2D = GetComponent<PlayerController2D>();
 
         SceneLinkedSMB<Player>.Initialise(m_Animator, this);
 
         Physics2D.queriesStartInColliders = false;
-        m_ContactFilter.layerMask = LayerMask.NameToLayer("Element");
+        m_ContactFilter.layerMask = LayerMask.NameToLayer("Everything");
         m_ContactFilter.useLayerMask = true;
         m_ContactFilter.useTriggers = false;
+
+        m_PrevPosition = m_Rigidbody2D.position;
+        m_NextPosition = m_Rigidbody2D.position;
     }
 
     void Update()
@@ -79,15 +81,28 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //Debug.Log("MoveVector | " + m_MoveVector);
-        //m_PlayerController2D.Move(m_MoveVector);
-        //m_Animator.SetBool(m_HashMovingPara, !Mathf.Approximately(m_MoveVector.x , 0f) || !Mathf.Approximately(m_MoveVector.y, 0f));
+        if (m_ResetPosition)
+        {
+            m_ResetPosition = false;
+            m_Rigidbody2D.MovePosition(m_NextPosition);
+        } else
+        {
+            m_Rigidbody2D.MovePosition(Vector2.MoveTowards(m_Rigidbody2D.position, m_NextPosition, 4 * Time.fixedDeltaTime));
+        }
 
         if (m_MovingCheckSwitch)
         {
-            var count = Physics2D.Raycast(transform.position, Face2Direction(), m_ContactFilter, m_HitBuffer, 1f);
-            Debug.Log("HitCount | " + count);
-            Debug.Log("FaceType | " + faceType);
+            m_MovingCheckSwitch = false;
+            var count = Physics2D.Raycast(m_Rigidbody2D.position, Face2Direction(), m_ContactFilter, m_HitBuffer, 1f);
+            if (count == 0)
+            {
+                m_NextPosition = GetNextPosition();
+                m_Animator.SetBool(m_HashMovingPara, true);
+            } else
+            {
+                m_PrevPosition = m_NextPosition;
+                m_Animator.SetBool(m_HashMovingPara, false);
+            }
         }
     }
 
@@ -112,6 +127,29 @@ public class Player : MonoBehaviour
         }
         return dir;
     }
+
+    Vector2 GetNextPosition()
+    {
+        Vector2 cur = m_PrevPosition;
+        Vector2 next = cur;
+        switch (faceType)
+        {
+            case FaceType.Up:
+                next = cur + Vector2.up;
+                break;
+            case FaceType.Down:
+                next = cur + Vector2.down;
+                break;
+            case FaceType.Left:
+                next = cur + Vector2.left;
+                break;
+            case FaceType.Right:
+                next = cur + Vector2.right;
+                break;
+        }
+        return next;
+    }
+
     IEnumerator ResumeCoroutine()
     {
         Time.timeScale = 1;
@@ -146,12 +184,6 @@ public class Player : MonoBehaviour
         StartCoroutine(ResumeCoroutine());
     }
 
-    public void UpdateMoving()
-    {
-        m_MoveVector.x = Mathf.MoveTowards(m_MoveVector.x, m_MoveVector.x + PlayerInput.Instance.Horizontal.Value, Time.deltaTime);
-        m_MoveVector.y = Mathf.MoveTowards(m_MoveVector.y, m_MoveVector.y + PlayerInput.Instance.Vertical.Value, Time.deltaTime);
-    }
-
     public void UpdateFace()
     {
         var horizontal = PlayerInput.Instance.Horizontal.Value;
@@ -183,9 +215,16 @@ public class Player : MonoBehaviour
 
     public void TryMoving()
     {
+        m_PrevPosition = m_NextPosition;
+        m_ResetPosition = true;
+
         var horizontal = PlayerInput.Instance.Horizontal.Value;
         var vertical = PlayerInput.Instance.Vertical.Value;
         m_MovingCheckSwitch = Mathf.Abs(horizontal) + Mathf.Abs(vertical) > 0;
+        if (!m_MovingCheckSwitch)
+        {
+            m_Animator.SetBool(m_HashMovingPara, false);
+        }
     }
 
     public void OpenDoor(Door door)
