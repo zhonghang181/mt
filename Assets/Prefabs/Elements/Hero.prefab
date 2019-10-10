@@ -172,7 +172,7 @@ MonoBehaviour:
     hp: 1000
     atk: 10
     def: 10
-    keys: 010000000100000001000000
+    keys: 000000000100000001000000
 --- !u!82 &7267553934980789072
 AudioSource:
   m_ObjectHideFlags: 0

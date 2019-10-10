@@ -10,6 +10,7 @@ public class MoveSMB : SceneLinkedSMB<Player>
 
     public override void OnSLStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        m_MonoBehaviour.UpdateFace();
         m_MonoBehaviour.TryMoving();
     }
 }
