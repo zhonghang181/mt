@@ -45,9 +45,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Hero
+  - name: Ground
     uniqueID: 1942938821
     locked: 0
-  - name: Ground
+  - name: Element
     uniqueID: 146870411
+    locked: 0
+  - name: Hero
+    uniqueID: 68538151
     locked: 0

@@ -72,7 +72,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -6146700129834819302, guid: f5385f0b5bd014b188e94b774960293e,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -166,14 +166,13 @@ MonoBehaviour:
   faceType: 0
   audioClipFootStep: {fileID: 8300000, guid: bca09b6626d2e49eebc217e1e11d6407, type: 3}
   m_PlayerData:
-    level: 0
+    level: 1
     gold: 0
     exp: 0
-    hp: 0
-    atk: 0
-    def: 0
-    keys: 
-  m_PlayerController2D: {fileID: 0}
+    hp: 1000
+    atk: 10
+    def: 10
+    keys: 010000000100000001000000
 --- !u!82 &7267553934980789072
 AudioSource:
   m_ObjectHideFlags: 0

@@ -128,7 +128,7 @@ GameObject:
   - component: {fileID: 2968742285063068150}
   - component: {fileID: 5639754839444145045}
   m_Layer: 5
-  m_Name: TextNum
+  m_Name: TextKeyBlueNum
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -358,7 +358,7 @@ GameObject:
   - component: {fileID: 2356913372135924562}
   - component: {fileID: 5996749847366116564}
   m_Layer: 5
-  m_Name: TextNum
+  m_Name: TextDef
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -516,7 +516,7 @@ GameObject:
   - component: {fileID: 3102346978260214543}
   - component: {fileID: 4436087999270030631}
   m_Layer: 5
-  m_Name: TextNum
+  m_Name: TextKeyRedNum
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -772,7 +772,7 @@ GameObject:
   - component: {fileID: 5795631300461916419}
   - component: {fileID: 5795631300461916416}
   m_Layer: 5
-  m_Name: TextNum (1)
+  m_Name: TextLevelNum
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -851,7 +851,7 @@ GameObject:
   - component: {fileID: 5795631300673502507}
   - component: {fileID: 5795631300673502504}
   m_Layer: 5
-  m_Name: TextNum
+  m_Name: TextKeyYellowNum
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1240,7 +1240,7 @@ GameObject:
   - component: {fileID: 5795631301127374713}
   - component: {fileID: 5795631301127374718}
   m_Layer: 5
-  m_Name: GameStatus
+  m_Name: CanvasGameStatus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1679,7 +1679,7 @@ GameObject:
   - component: {fileID: 5795631301990550929}
   - component: {fileID: 5795631301990550934}
   m_Layer: 5
-  m_Name: TextNum
+  m_Name: TextHp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1877,8 +1877,8 @@ MonoBehaviour:
   Exp: {fileID: 8063278506146750311}
   Keys:
   - {fileID: 5795631300673502504}
-  - {fileID: 6954409732183000945}
-  - {fileID: 5365426761118065188}
+  - {fileID: 5639754839444145045}
+  - {fileID: 4436087999270030631}
 --- !u!1 &6387893720648790307
 GameObject:
   m_ObjectHideFlags: 0
@@ -1928,7 +1928,7 @@ GameObject:
   - component: {fileID: 5179565989603300732}
   - component: {fileID: 8884196595064810948}
   m_Layer: 5
-  m_Name: TextNum
+  m_Name: TextAtk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2281,7 +2281,7 @@ GameObject:
   - component: {fileID: 2280477304903191470}
   - component: {fileID: 8063278506146750311}
   m_Layer: 5
-  m_Name: TextNum
+  m_Name: TextExp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2439,7 +2439,7 @@ GameObject:
   - component: {fileID: 9104143636159693782}
   - component: {fileID: 259605919414400186}
   m_Layer: 5
-  m_Name: TextNum
+  m_Name: TextGold
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

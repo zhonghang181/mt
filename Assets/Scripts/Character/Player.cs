@@ -102,11 +102,28 @@ public class Player : MonoBehaviour
             {
                 m_PrevPosition = m_NextPosition;
                 m_Animator.SetBool(m_HashMovingPara, false);
+                OnCollider();
             }
         }
     }
 
-    // =========== Protected functions ===========
+    // =========== Private functions ===========
+    void OnCollider()
+    {
+        var obj = m_HitBuffer[0];
+        if (obj.collider.gameObject.CompareTag("Door"))
+        {
+            var door = obj.collider.gameObject.GetComponent<Door>();
+            int keyIndex = (int)door.GetDoorType();
+            if (!door.IsOpened() && m_PlayerData.GetKeyNum(keyIndex) > 0)
+            {
+                m_PlayerData.UpdateKeys(keyIndex, -1);
+                door.Open();
+                m_AudioSource.PlayOneShot(door._audioClip, 0.5f);
+            }
+        }
+    }
+
     Vector2 Face2Direction()
     {
         Vector2 dir = Vector2.up;
@@ -224,17 +241,6 @@ public class Player : MonoBehaviour
         if (!m_MovingCheckSwitch)
         {
             m_Animator.SetBool(m_HashMovingPara, false);
-        }
-    }
-
-    public void OpenDoor(Door door)
-    {
-        int keyIndex = (int)door.GetDoorType();
-        if (!door.IsOpened() && m_PlayerData.GetKeyNum(keyIndex) > 0)
-        {
-            m_PlayerData.UpdateKeys(keyIndex, -1);
-            door.Open();
-            m_AudioSource.PlayOneShot(door._audioClip, 0.5f);
         }
     }
 

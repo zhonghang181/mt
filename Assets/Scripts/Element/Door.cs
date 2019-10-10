@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Door : MonoBehaviour
 {
-    // =========== Public ===========
     public enum DoorType
     {
         Yellow,
@@ -14,10 +13,9 @@ public class Door : MonoBehaviour
     public DoorType _doorType;
     public AudioClip _audioClip;
 
-    // =========== Private ===========
-    private Animator _animator;
+    Animator _animator;
 
-    // =========== Functions ===========
+    // =========== MonoBehavior ===========
     void Start()
     {
         _animator = GetComponent<Animator>();
@@ -28,12 +26,7 @@ public class Door : MonoBehaviour
         
     }
 
-    // =========== Outter Api ===========
-    public void OnAnimationFinished()
-    {
-        Destroy(gameObject);
-    }
-
+    // =========== Public Functions ===========
     public void Open()
     {
         _animator.SetBool("IsOpen", true);
@@ -47,5 +40,11 @@ public class Door : MonoBehaviour
     public DoorType GetDoorType()
     {
         return _doorType;
+    }
+
+    // =========== Auto Called ===========
+    public void OnAnimationFinished()
+    {
+        Destroy(gameObject);
     }
 }
