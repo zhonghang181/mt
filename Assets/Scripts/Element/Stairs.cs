@@ -10,6 +10,7 @@ public class Stairs : MonoBehaviour
     }
 
     public StairsType stairsType;
+
     SpriteRenderer m_SpriteRendererStairs;
 
     void Start()
@@ -25,10 +26,5 @@ public class Stairs : MonoBehaviour
                 m_SpriteRendererStairs.sprite = AssetsManager.Instance.GetSprite("Terrains_23", "Terrains");
                 break;
         }   
-    }
-
-    void Update()
-    {
-        
     }
 }

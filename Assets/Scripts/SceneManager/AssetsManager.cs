@@ -41,8 +41,6 @@ public class AssetsManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
-
-        
     }
 
     // =========== Public Funcstions ===========

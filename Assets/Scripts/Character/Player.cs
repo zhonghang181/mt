@@ -5,10 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
-    public enum FaceType
-    {
-        Up, Down, Left, Right,
-    }
     static protected Player s_Instance;
     static public Player Instance
     {
@@ -201,6 +197,12 @@ public class Player : MonoBehaviour
         StartCoroutine(ResumeCoroutine());
     }
 
+    public void SetFace(FaceType faceType)
+    {
+        this.faceType = faceType;
+        m_Animator.SetFloat(m_HashFacePara, (float)faceType);
+    }
+
     public void UpdateFace()
     {
         var horizontal = PlayerInput.Instance.Horizontal.Value;
@@ -248,5 +250,23 @@ public class Player : MonoBehaviour
     public void FootStep()
     {
         m_AudioSource.PlayOneShot(audioClipFootStep);
+    }
+
+    public void Redirect(BirthPointType birthPoint)
+    {
+        var arrs = FindObjectsOfType<BirthPoint>();
+        foreach (var obj in arrs)
+        {
+            if (obj.birthPoint == birthPoint)
+            {
+                var targetPosition = obj.gameObject.transform.position;
+                gameObject.transform.position = targetPosition;
+                m_PrevPosition = targetPosition;
+                m_NextPosition = targetPosition;
+                SetFace(obj.faceType);
+
+                break;
+            }
+        }
     }
 }

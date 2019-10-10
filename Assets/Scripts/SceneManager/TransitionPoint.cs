@@ -5,11 +5,6 @@ using UnityEngine;
 [RequireComponent(typeof(Collider2D))]
 public class TransitionPoint : MonoBehaviour
 {
-    public enum TransitionType
-    {
-        DifferentScene,
-        SameScene,
-    }
     public enum SceneType
     {
         Level1,
@@ -22,7 +17,7 @@ public class TransitionPoint : MonoBehaviour
     // =========== Properties ===========
     public GameObject transitionGameObject;
     public SceneType newScene = SceneType.Level1;
-    public TransitionType transitionType = TransitionType.DifferentScene;
+    public BirthPointType birthPoint = BirthPointType.Upstairs;
 
     public string GetSceneName()
     {

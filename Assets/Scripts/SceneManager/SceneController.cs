@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class SceneController : MonoBehaviour
 {
-    #region Static
     protected static SceneController s_Instance;
     public static SceneController Instance
     {
@@ -40,16 +39,14 @@ public class SceneController : MonoBehaviour
 
     public static void TransitionToScene(TransitionPoint transitionPoint)
     {
-        Instance.StartCoroutine(Instance.Transition(transitionPoint.GetSceneName()));
+        Instance.StartCoroutine(Instance.Transition(transitionPoint.GetSceneName(), transitionPoint.birthPoint));
     }
 
     public static void RestartLevel()
     {
-        Instance.StartCoroutine(Instance.Transition(SceneManager.GetActiveScene().name));
+        Instance.StartCoroutine(Instance.Transition(SceneManager.GetActiveScene().name, BirthPointType.Upstairs));
     }
-    #endregion
 
-    #region Instance
     private void Awake()
     {
         if (Instance != this)
@@ -61,7 +58,7 @@ public class SceneController : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public IEnumerator Transition(string newSceneName)
+    public IEnumerator Transition(string newSceneName, BirthPointType birthPoint)
     {
         var options = SceneManager.LoadSceneAsync(newSceneName);
         options.allowSceneActivation = false;
@@ -82,8 +79,10 @@ public class SceneController : MonoBehaviour
             }
         }
 
+        Player.Instance.Redirect(birthPoint);
+
         yield return StartCoroutine(SceneFader.FadeSceneOut());
+
         m_IsTransitioning = false;
     }
-    #endregion
 }
