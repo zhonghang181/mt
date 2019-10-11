@@ -18,11 +18,29 @@ public class PlayerData
     {
         keys[keyIndex] += numDelta;
         keys[keyIndex] = keys[keyIndex] < 0 ? 0 : keys[keyIndex];
-        Notification.Instance.Emit(Const.Event_Key_Num_Changed);
+        Notification.Instance.Emit(Const.Event_Player_Data_Reload);
     }
 
     public int GetKeyNum(int keyIndex)
     {
         return keys[keyIndex];
+    }
+
+    public void UpdateAtk(int numDelta)
+    {
+        atk += numDelta;
+        Notification.Instance.Emit(Const.Event_Player_Data_Reload);
+    }
+
+    public void UpdateDef(int numDelta)
+    {
+        def += numDelta;
+        Notification.Instance.Emit(Const.Event_Player_Data_Reload);
+    }
+
+    public void UpdateHp(int numDelta)
+    {
+        hp += numDelta;
+        Notification.Instance.Emit(Const.Event_Player_Data_Reload);
     }
 }

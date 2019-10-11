@@ -5,11 +5,6 @@ using UnityEngine.UI;
 
 public class Tips : MonoBehaviour
 {
-    // =========== Const Define ===========
-    public enum ShowType
-    {
-        KeyYellow, KeyBlue, KeyRed,
-    }
     // =========== Static Functions ===========
     private static Tips s_Instance;
     public static Tips Instance
@@ -66,19 +61,31 @@ public class Tips : MonoBehaviour
     }
 
     // =========== Public Functions ===========
-    public void ShowTips(ShowType showType)
+    public void ShowTips(ItemType showType)
     {
         string text = "";
         switch(showType)
         {
-            case ShowType.KeyYellow:
+            case ItemType.KeyYellow:
                 text = "获得 <color=#FECBAF>黄钥匙</color> x1";
                 break;
-            case ShowType.KeyBlue:
+            case ItemType.KeyBlue:
                 text = "获得 <color=#CECCFD>蓝钥匙</color> x1";
                 break;
-            case ShowType.KeyRed:
+            case ItemType.KeyRed:
                 text = "获得 <color=#FD8B8E>红钥匙</color> x1";
+                break;
+            case ItemType.GemRed:
+                text = "获得 <color=#FD8B8E>红宝石</color> x1";
+                break;
+            case ItemType.GemBlue:
+                text = "获得 <color=#FD8B8E>蓝宝石</color> x1";
+                break;
+            case ItemType.MedicineHp1:
+                text = "获得 <color=#FD8B8E>小瓶药剂</color> x1";
+                break;
+            case ItemType.MedicineHp2:
+                text = "获得 <color=#FD8B8E>大瓶药剂</color> x1";
                 break;
         }
 

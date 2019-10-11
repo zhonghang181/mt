@@ -105,17 +105,24 @@ public class Player : MonoBehaviour
     void OnCollider()
     {
         var obj = m_HitBuffer[0];
-        if (obj.collider.gameObject.CompareTag("Door"))
+        var colliderTag = obj.collider.gameObject.tag;
+        switch (colliderTag)
         {
-            var door = obj.collider.gameObject.GetComponent<Door>();
-            int keyIndex = (int)door.GetDoorType();
-            var data = GameData.Instance.player;
-            if (!door.IsOpened() && data.GetKeyNum(keyIndex) > 0)
-            {
-                data.UpdateKeys(keyIndex, -1);
-                door.Open();
-                m_AudioSource.PlayOneShot(door._audioClip, 0.5f);
-            }
+            case "Door":
+                var door = obj.collider.gameObject.GetComponent<Door>();
+                int keyIndex = (int)door.GetDoorType();
+                var data = GameData.Instance.player;
+                if (!door.IsOpened() && data.GetKeyNum(keyIndex) > 0)
+                {
+                    data.UpdateKeys(keyIndex, -1);
+                    door.Open();
+                    m_AudioSource.PlayOneShot(door._audioClip, 0.5f);
+                }
+                break;
+            case "Monster":
+                var monster = obj.collider.gameObject.GetComponent<Monster>();
+                FightPanel.Instance.Show(GameData.Instance.player, monster.monsterData);
+                break;
         }
     }
 

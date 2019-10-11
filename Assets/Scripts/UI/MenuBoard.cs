@@ -12,10 +12,15 @@ public class MenuBoard : MonoBehaviour
     public Text Gold;
     public Text Exp;
     public Text[] Keys;
+    public Text Stage;
+
+    private void Awake()
+    {
+        GameData.Instance.level.stage = int.Parse(Stage.text);
+    }
 
     void Start()
     {
-        Notification.Instance.On(Const.Event_Key_Num_Changed, OnKeyNumChanged);
         Notification.Instance.On(Const.Event_Player_Data_Reload, OnPlayerDataReload);
         
         Reload();
@@ -23,7 +28,6 @@ public class MenuBoard : MonoBehaviour
 
     private void OnDestroy()
     {
-        Notification.Instance.Off(Const.Event_Key_Num_Changed, OnKeyNumChanged);
         Notification.Instance.Off(Const.Event_Player_Data_Reload, OnPlayerDataReload);
     }
 
@@ -33,13 +37,6 @@ public class MenuBoard : MonoBehaviour
     }
 
     // =========== Private Function ===========
-    void UpdateKeys()
-    {
-        Keys[0].text = GameData.Instance.player.GetKeyNum(0).ToString();
-        Keys[1].text = GameData.Instance.player.GetKeyNum(1).ToString();
-        Keys[2].text = GameData.Instance.player.GetKeyNum(2).ToString();
-    }
-
     void Reload()
     {
         var data = GameData.Instance.player;
@@ -49,15 +46,12 @@ public class MenuBoard : MonoBehaviour
         Gold.text = data.gold.ToString();
         Exp.text = data.exp.ToString();
         Level.text = data.level.ToString();
-        UpdateKeys();
+        Keys[0].text = GameData.Instance.player.GetKeyNum(0).ToString();
+        Keys[1].text = GameData.Instance.player.GetKeyNum(1).ToString();
+        Keys[2].text = GameData.Instance.player.GetKeyNum(2).ToString();
     }
 
     // =========== Public Functions ===========
-    public void OnKeyNumChanged(CustomEvent data)
-    {
-        UpdateKeys();
-    }
-
     public void OnPlayerDataReload(CustomEvent data)
     {
         Reload();

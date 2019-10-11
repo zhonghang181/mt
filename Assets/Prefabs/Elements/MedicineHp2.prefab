@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 5866358252282207525}
   - component: {fileID: 816083480720413011}
   - component: {fileID: 6256950187677900597}
-  - component: {fileID: 8748176995160647942}
+  - component: {fileID: 8752697506222446042}
   m_Layer: 9
-  m_Name: KeyYellow
+  m_Name: MedicineHp2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -70,8 +70,7 @@ SpriteRenderer:
   m_SortingLayerID: 146870411
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 8033092973025764044, guid: 8bb7cb938605b4d6fa1be313d7eba9ed,
-    type: 3}
+  m_Sprite: {fileID: 612596470744354101, guid: 8bb7cb938605b4d6fa1be313d7eba9ed, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -108,7 +107,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &8748176995160647942
+--- !u!114 &8752697506222446042
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -120,4 +119,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e03cae43f40b4eada0466820195fd45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemType: 0
+  itemType: 6
