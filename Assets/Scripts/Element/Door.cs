@@ -19,6 +19,11 @@ public class Door : MonoBehaviour
     void Start()
     {
         _animator = GetComponent<Animator>();
+
+        if (!GameData.Instance.level.RegisterElement(gameObject))
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Update()
@@ -45,8 +50,7 @@ public class Door : MonoBehaviour
     // =========== Auto Called ===========
     public void OnAnimationFinished()
     {
+        GameData.Instance.level.DisableElement(gameObject);
         Destroy(gameObject);
-
-
     }
 }

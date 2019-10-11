@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Player : MonoBehaviour, IDataPersister
+public class Player : MonoBehaviour
 {
     static protected Player s_Instance;
     static public Player Instance
@@ -27,45 +27,28 @@ public class Player : MonoBehaviour, IDataPersister
     protected RaycastHit2D[] m_HitBuffer = new RaycastHit2D[3];
     Vector2 m_NextPosition;
     Vector2 m_PrevPosition;
-    string m_DataTag = "PersistentDataOfPlayer";
 
     protected readonly int m_HashMovingPara = Animator.StringToHash("Moving");
     protected readonly int m_HashMoveXPara = Animator.StringToHash("MoveX");
     protected readonly int m_HashMoveYPara = Animator.StringToHash("MoveY");
     protected readonly int m_HashFacePara = Animator.StringToHash("Face");
 
-    // =========== IDataPersister ===========
-    public string GetDataTag()
-    {
-        return m_DataTag;
-    }
-    public Data SaveData()
-    {
-        return new Data<PlayerData>(playerData);
-    }
-    public void LoadData(Data data)
-    {
-        Data<PlayerData> wrapper = (Data<PlayerData>)data;
-        playerData = wrapper.value;
-        Notification.Instance.Emit(Const.Event_Player_Data_Reload);
-    }
-
     // =========== MonoBehaviour ===========
     private void Awake()
     {
         s_Instance = this;
+
+        GameData.Instance.InitPlayer(playerData);
     }
 
     void Start()
     {
-        Debug.Log("Player Start");
         m_Animator = GetComponent<Animator>();
         m_Rigidbody2D = GetComponent<Rigidbody2D>();
         m_Collider2D = GetComponent<Collider2D>();
         m_AudioSource = GetComponent<AudioSource>();
 
         SceneLinkedSMB<Player>.Initialise(m_Animator, this);
-        PersistentDataManager.Instance.Register(this);
 
         Physics2D.queriesStartInColliders = false;
         m_ContactFilter.layerMask = LayerMask.NameToLayer("Everything");
@@ -74,11 +57,6 @@ public class Player : MonoBehaviour, IDataPersister
 
         m_PrevPosition = m_Rigidbody2D.position;
         m_NextPosition = m_Rigidbody2D.position;
-    }
-
-    private void OnDestroy()
-    {
-        PersistentDataManager.Instance.Unregister(this);
     }
 
     void Update()
@@ -131,9 +109,10 @@ public class Player : MonoBehaviour, IDataPersister
         {
             var door = obj.collider.gameObject.GetComponent<Door>();
             int keyIndex = (int)door.GetDoorType();
-            if (!door.IsOpened() && playerData.GetKeyNum(keyIndex) > 0)
+            var data = GameData.Instance.player;
+            if (!door.IsOpened() && data.GetKeyNum(keyIndex) > 0)
             {
-                playerData.UpdateKeys(keyIndex, -1);
+                data.UpdateKeys(keyIndex, -1);
                 door.Open();
                 m_AudioSource.PlayOneShot(door._audioClip, 0.5f);
             }

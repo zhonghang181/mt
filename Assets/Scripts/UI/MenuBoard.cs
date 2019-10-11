@@ -35,14 +35,14 @@ public class MenuBoard : MonoBehaviour
     // =========== Private Function ===========
     void UpdateKeys()
     {
-        Keys[0].text = Player.Instance.playerData.GetKeyNum(0).ToString();
-        Keys[1].text = Player.Instance.playerData.GetKeyNum(1).ToString();
-        Keys[2].text = Player.Instance.playerData.GetKeyNum(2).ToString();
+        Keys[0].text = GameData.Instance.player.GetKeyNum(0).ToString();
+        Keys[1].text = GameData.Instance.player.GetKeyNum(1).ToString();
+        Keys[2].text = GameData.Instance.player.GetKeyNum(2).ToString();
     }
 
     void Reload()
     {
-        var data = Player.Instance.playerData;
+        var data = GameData.Instance.player;
         Atk.text = data.atk.ToString();
         Def.text = data.def.ToString();
         Hp.text = data.hp.ToString();

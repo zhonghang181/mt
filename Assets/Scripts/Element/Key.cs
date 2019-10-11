@@ -13,7 +13,10 @@ public class Key : MonoBehaviour
     // =========== MonoBehavior ===========
     void Start()
     {
-        
+        if (!GameData.Instance.level.RegisterElement(this.gameObject))
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Update()
@@ -23,7 +26,8 @@ public class Key : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         Tips.Instance.ShowTips(KeyType2ShowType());
-        Player.Instance.playerData.UpdateKeys((int)keyType, 1);
+        GameData.Instance.player.UpdateKeys((int)keyType, 1);
+        GameData.Instance.level.DisableElement(gameObject);
         Destroy(gameObject);
     }
 

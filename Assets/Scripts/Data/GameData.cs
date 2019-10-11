@@ -17,12 +17,16 @@ public class GameData
         }
     }
 
-    public PlayerData player = new PlayerData();
+    public PlayerData player;
     public bool IsPlayerAssigned { private set; get; }
+    public LevelData level = new LevelData();
 
     public void InitPlayer(PlayerData player)
     {
-        this.player = player;
-        IsPlayerAssigned = true;
+        if (!IsPlayerAssigned)
+        {
+            this.player = player;
+            IsPlayerAssigned = true;
+        }
     }
 }
