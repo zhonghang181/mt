@@ -18,7 +18,7 @@ public class PlayerData
     {
         keys[keyIndex] += numDelta;
         keys[keyIndex] = keys[keyIndex] < 0 ? 0 : keys[keyIndex];
-        Notification.GetInstance().Emit(Const.Event_Key_Num_Changed);
+        Notification.Instance.Emit(Const.Event_Key_Num_Changed);
     }
 
     public int GetKeyNum(int keyIndex)

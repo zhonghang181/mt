@@ -60,6 +60,9 @@ public class SceneController : MonoBehaviour
 
     public IEnumerator Transition(string newSceneName, BirthPointType birthPoint)
     {
+        PersistentDataManager.Instance.SaveAllData();
+        PersistentDataManager.Instance.ClearPersisters();
+
         var options = SceneManager.LoadSceneAsync(newSceneName);
         options.allowSceneActivation = false;
         while (!options.isDone)
@@ -79,6 +82,9 @@ public class SceneController : MonoBehaviour
             }
         }
 
+        Debug.Log("SceneLoaded");
+
+        PersistentDataManager.Instance.LoadAllData();
         Player.Instance.Redirect(birthPoint);
 
         yield return StartCoroutine(SceneFader.FadeSceneOut());

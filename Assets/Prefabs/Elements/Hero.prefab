@@ -165,7 +165,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   faceType: 0
   audioClipFootStep: {fileID: 8300000, guid: bca09b6626d2e49eebc217e1e11d6407, type: 3}
-  m_PlayerData:
+  playerData:
     level: 1
     gold: 0
     exp: 0

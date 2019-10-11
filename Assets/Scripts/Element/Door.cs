@@ -46,5 +46,7 @@ public class Door : MonoBehaviour
     public void OnAnimationFinished()
     {
         Destroy(gameObject);
+
+
     }
 }

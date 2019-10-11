@@ -19,14 +19,16 @@ public class Notification
     private Dictionary<string, List<Handler>> eventListerners = new Dictionary<string, List<Handler>>();
 
     //Single 
-    public static Notification GetInstance()
+    public static Notification Instance
     {
-        if (instance == null)
+        get
         {
-            instance = new Notification();
+            if (instance == null)
+            {
+                instance = new Notification();
+            }
             return instance;
-        }
-        return instance;
+        }        
     }
 
     public void On(string evtName, Handler listener)

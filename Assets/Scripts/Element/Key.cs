@@ -23,7 +23,7 @@ public class Key : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         Tips.Instance.ShowTips(KeyType2ShowType());
-        Player.Instance.PlayerData.UpdateKeys((int)keyType, 1);
+        Player.Instance.playerData.UpdateKeys((int)keyType, 1);
         Destroy(gameObject);
     }
 
